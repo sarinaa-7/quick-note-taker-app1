@@ -67,6 +67,7 @@ ipcMain.handle('new-note', async () => {
     title: 'Unsaved Changes',
     message: 'You have unsaved changes. Start a new note anyway?'
   });
+  return{confirmed: result.response === 0};
 });
 ipcMain.handle('open-file', async (event) => {
   const result = await dialog.showOpenDialog({
@@ -81,8 +82,5 @@ ipcMain.handle('open-file', async (event) => {
   const filePath = result.filePaths[0];
   const content = fs.readFileSync(filePath, 'utf-8');
 
-  return { success: true, content, filePath };
-});
+  return { success: true, content, filePath };});
 
-// return result.response === 0;
-// });
