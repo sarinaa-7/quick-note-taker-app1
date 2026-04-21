@@ -19,7 +19,7 @@
             height :60vh;
             font-size: 18px;
             padding:15px;
-        }
+        }node ::-ms-value
         button{
             padding :12px 30px;
             font-size  :18px;
@@ -31,10 +31,16 @@
 </style>
 </head>
 <body> 
-    <h1> Quick Note Taker</h1>
+    <h1>🥹:Quick Note Taker</h1>
     <textarea id="note" placeholder="Start typing your note..."></textarea>
 <br> <br>
-<button id = "save" > Save Note </button>
+<button id = "save" > Save Note
+</button>
+<p id="save_status" style="color: gray; font-size: 14px;"></p>
+<button id ="deleteBtn" style ="background: #f44336;">Delete Note</button>
+<button id ="save-as">Save As</button>
+<button id ="new-note" style="background: #4CAF50;">New Note</button>
+<button id="open-file">Open File</button>
 <script src ="renderer.js"></script> 
 </body>
 </html>
