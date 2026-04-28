@@ -1,11 +1,10 @@
 <!DOCTYPE html>
-<html> 
+<html>
 
-
-<head>
-    <meta charset="UTF-8">
-    <title>Quick Note Taker</title>
-<style>
+    <head>
+        <meta charset="UTF-8">
+        <title>Quick Note Taker</title>
+        <style>
     body
         {
             font-family:system-ui;
@@ -29,18 +28,19 @@
             cursor: pointer;
         }
 </style>
-</head>
-<body> 
-    <h1>🥹:Quick Note Taker</h1>
-    <textarea id="note" placeholder="Start typing your note..."></textarea>
-<br> <br>
-<button id = "save" > Save Note 
-</button>
-<p id="save_status" style="color: gray; font-size: 14px;"></p>
-<button id ="deleteBtn" style ="background: #f44336;">Delete Note</button>
-<button id ="save-as">Save As</button>
-<button id ="new-note" style="background: #4CAF50;">New Note</button>
-<button id="open-file">Open File</button>
-<script src ="renderer.js"></script> 
-</body>
+    </head>
+    <body>
+        <h1>🥹:Quick Note Taker</h1>
+        <p id="save_status" style="color: rgb(0, 0, 0); font-size: 14px;">Save
+            status</p>
+        <textarea id="note" placeholder="Start typing your note..."></textarea>
+        <br> <br>
+        <button id="save">Save Note</button>
+
+        <button id="deleteBtn" style="background: #f44336;">Delete Note</button>
+        <button id="save-as">Save As</button>
+        <button id="new-note" style="background: #4CAF50;">New Note</button>
+        <button id="open-file">Open File</button>
+        <script src="renderer.js"></script>
+    </body>
 </html>
