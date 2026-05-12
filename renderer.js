@@ -98,6 +98,23 @@ deleteBtn.addEventListener('click', async () => {
     statusEl.textContent = 'Auto-save error!';
   }
 }
+// NEW: Menu action listeners
+
+window.electronAPI.onMenuAction('menu-new-note', () => {
+  newNoteBtn.click(); // reuse the existing button logic
+});
+
+window.electronAPI.onMenuAction('menu-open-file', () => {
+  openFileBtn.click(); // reuse the existing button logic
+});
+
+window.electronAPI.onMenuAction('menu-save', () => {
+  saveBtn.click(); // reuse the existing button logic
+});
+
+window.electronAPI.onMenuAction('menu-save-as', () => {
+  saveAsBtn.click(); // reuse the existing button logic
+});
 
 });
 
