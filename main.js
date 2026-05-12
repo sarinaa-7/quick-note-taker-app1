@@ -1,9 +1,4 @@
-const {
-  app,
-  BrowserWindow,
-  ipcMain,
-  dialog
-} = require('electron');
+const { app, BrowserWindow, ipcMain, dialog } = require('electron');
 const path = require('node:path');
 const fs = require('node:fs');
 
@@ -33,18 +28,11 @@ app.on('window-all-closed', () => {
   if (process.platform !== 'darwin') app.quit();
 });
 
-
-//savee note
-
 ipcMain.handle('save-note', async (event, text) => {
   const filePath = path.join(app.getPath('documents'), 'quicknote.txt');
   fs.writeFileSync(filePath, text, 'utf-8');
-  return {
-    success: true
-  };
+  return { success: true };
 });
-
-//load note
 
 ipcMain.handle('load-note', async () => {
   const filePath = path.join(app.getPath('documents'), 'quicknote.txt');
@@ -56,42 +44,20 @@ ipcMain.handle('load-note', async () => {
   return '';
 });
 
-//save as
-
 ipcMain.handle('save-as', async (event, text) => {
   const result = await dialog.showSaveDialog({
     title: 'Save Note',
     defaultPath: 'quicknote.txt',
-    filters: [{
-      name: 'Text Files',
-      extensions: ['txt']
-    }]
+    filters: [{ name: 'Text Files', extensions: ['txt'] }]
   });
 
   if (result.canceled || !result.filePath) {
-    return {
-      success: false
-    };
+    return { success: false };
   }
 
   fs.writeFileSync(result.filePath, text, 'utf-8');
-  return {
-    success: true,
-    filePath: result.filePath
-  };
+  return { success: true, filePath: result.filePath };
 });
-
-// UPDATED: Smart Save handler
-ipcMain.handle('smart-save', async (event, text, filePath) => {
-  const targetPath = filePath || path.join(app.getPath('documents'), 'quicknote.txt');
-  fs.writeFileSync(targetPath, text, 'utf-8');
-  return {
-    success: true,
-    filePath: targetPath
-  };
-});
-
-//new note
 
 ipcMain.handle('new-note', async () => {
   const result = await dialog.showMessageBox({
@@ -101,57 +67,23 @@ ipcMain.handle('new-note', async () => {
     title: 'Unsaved Changes',
     message: 'You have unsaved changes. Start a new note anyway?'
   });
-  return {
-    confirmed: result.response === 0
-  };
+  return { confirmed: result.response === 0} ;
 });
-
-ipcMain.handle('delete-note', async () => {
-  const filePath = path.join(app.getPath('documents'), 'quicknote.txt');
-
-  try {
-    if (fs.existsSync(filePath)) {
-      fs.unlinkSync(filePath);
-      return {
-        success: true
-      };
-    } else {
-      return {
-        success: false,
-        error: 'File does not exist'
-      };
-    }
-  } catch (err) {
-    return {
-      success: false,
-      error: err.message
-    };
-  }
-});
-
-//open file
-
 ipcMain.handle('open-file', async (event) => {
   const result = await dialog.showOpenDialog({
     properties: ['openFile'],
-    filters: [{
-      name: 'Text Files',
-      extensions: ['txt']
-    }]
+    filters: [{ name: 'Text Files', extensions: ['txt'] }]
   });
 
   if (result.canceled) {
-    return {
-      success: false
-    };
+    return { success: false };
   }
 
   const filePath = result.filePaths[0];
   const content = fs.readFileSync(filePath, 'utf-8');
 
-  return {
-    success: true,
-    content,
-    filePath
-  };
+  return { success: true, content, filePath };
 });
+
+// return result.response === 0;
+// });
