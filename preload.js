@@ -1,24 +1,37 @@
-const { contextBridge, ipcRenderer } = require('electron');
+const {
+    contextBridge,
+    ipcRenderer
+} = require('electron');
 
 contextBridge.exposeInMainWorld('electronAPI', {
-    saveNote: (note) => ipcRenderer.invoke('save-note', note),
-    loadNote: () => ipcRenderer.invoke('load-note'),
-    saveAs: (text) => ipcRenderer.invoke('save-as', text),
-    deleteNote: () => ipcRenderer.invoke('delete-note'),
-    newNote: () => ipcRenderer.invoke('new-note'),
-    openFile: () => ipcRenderer.invoke('open-file'),
-    smartSave: (text, filePath) =>
-        ipcRenderer.invoke('smart-save', text, filePath),
+saveNote: (note) => ipcRenderer.invoke('save-note', note),
+loadNote: () => ipcRenderer.invoke('load-note'),
+saveAs: (text) => ipcRenderer.invoke('save-as', text),
+deleteNote: () => ipcRenderer.invoke('delete-note'),
+newNote: () => ipcRenderer.invoke('new-note'),
+openFile: () => ipcRenderer.invoke('open-file'),
+togglePin: (id) => ipcRenderer.invoke('toggle-pin', id),
 
-    onMenuAction: (channel, callback) =>
-        ipcRenderer.on(channel, callback),
+smartSave: (text, filePath) =>
+    ipcRenderer.invoke('smart-save', text, filePath),
 
-    // NEW: JSON notes methods
-    getNotes: () => ipcRenderer.invoke('get-notes'),
+onMenuAction: (channel, callback) =>
+    ipcRenderer.on(channel, callback),
 
-    saveNoteJson: (note) =>
-        ipcRenderer.invoke('save-note-json', note),
+// NEW: JSON notes methods
+getNotes: () => ipcRenderer.invoke('get-notes'),
 
-    deleteNoteJson: (id) =>
-        ipcRenderer.invoke('delete-note', id),
+saveNoteJson: (note) =>
+    ipcRenderer.invoke('save-note-json', note),
+
+deleteNoteJson: (id) =>
+    ipcRenderer.invoke('delete-note', id),
+
+// NEW: settings methods
+getSettings: () => ipcRenderer.invoke('get-settings'),
+
+saveSettings: (settings) =>
+    ipcRenderer.invoke('save-settings', settings)
+
+
 });
