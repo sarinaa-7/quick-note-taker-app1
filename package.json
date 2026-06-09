@@ -6,7 +6,6 @@
   "author": "",
   "license": "ISC",
   "type": "commonjs",
-
   "build": {
     "appId": "com.quicknotetaker.app",
     "productName": "Quick Note Taker",
@@ -17,18 +16,15 @@
       "target": "nsis"
     }
   },
-
   "scripts": {
     "start": "electron .",
     "build": "electron-builder",
     "dist": "electron-builder"
   },
-
   "devDependencies": {
     "electron": "^40.10.2",
     "electron-builder": "^26.15.0"
   },
-
   "dependencies": {
     "boolean": "^3.2.0",
     "buffer-crc32": "^0.2.13",
