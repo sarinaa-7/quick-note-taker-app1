@@ -1,218 +1,134 @@
 <!DOCTYPE html>
-<html>
-  <head>
+<html lang="en">
+<head>
     <meta charset="UTF-8">
     <title>Quick Note Taker</title>
-
     <style>
-      :root {
-        --bg-primary: #f4f4f4;
-        --bg-sidebar: #2b2b2b;
-        --bg-editor: #ffffff;
-        --bg-note-item: #3a3a3a;
-        --bg-note-item-hover: #4a4a4a;
-        --bg-note-item-active: #316357;
-        --text-primary: #000000;
-        --text-sidebar: #ffffff;
-        --text-muted: #999999;
-        --border-color: #cccccc;
-        --button-bg: #316357;
-        --button-hover: #3d7a6b;
-      }
+        :root {
+            --bg: #f4f4f4;
+            --text: #333;
+            --textarea-bg: white;
+            --btn-bg: #316357;
+            --btn-text: white;
+        }
+        body.dark-mode {
+            --bg: #1e1e1e;
+            --text: #f4f4f4;
+            --textarea-bg: #2d2d2d;
+            --btn-bg: #4a907e;
+        }
+        body {
+            font-family: system-ui;
+            padding: 20px;
+            background: var(--bg);
+            color: var(--text);
+            transition: all 0.3s;
+        }
+        textarea {
+            width: 100%;
+            height: 60vh;
+            font-size: 18px;
+            padding: 15px;
+            box-sizing: border-box;
+            background: var(--textarea-bg);
+            color: var(--text);
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        .controls {
+            margin-top: 20px;
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        button {
+            padding: 12px 24px;
+            font-size: 16px;
+            background: var(--btn-bg);
+            color: var(--btn-text);
+            border: none;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+        button:hover { opacity: 0.9; }
+        button.delete { background: #a94442; }
+        
+        #save_status { font-size: 14px; color: #666; margin-bottom: 10px; }
+        .stats { font-size: 12px; color: #888; margin-top: 10px; }
 
-      body.dark-mode {
-        --bg-primary: #1e1e1e;
-        --bg-sidebar: #141414;
-        --bg-editor: #252525;
-        --bg-note-item: #2a2a2a;
-        --bg-note-item-hover: #333333;
-        --bg-note-item-active: #316357;
-        --text-primary: #f0f0f0;
-        --text-sidebar: #dddddd;
-        --text-muted: #777777;
-        --border-color: #444444;
-        --button-bg: #316357;
-        --button-hover: #3d7a6b;
-      }
+        /* Modal */
+        #trash-modal {
+            display: none;
+            position: fixed;
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%);
+            background: var(--textarea-bg);
+            padding: 20px;
+            border: 1px solid #ccc;
+            box-shadow: 0 0 20px rgba(0,0,0,0.5);
+            width: 500px;
+            z-index: 1000;
+        }
+        #modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 999;
+        }
+        #trash-list { list-style: none; padding: 0; max-height: 300px; overflow-y: auto; }
+        #trash-list li {
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 10px; border-bottom: 1px solid #444;
+        }
 
-      * {
-        box-sizing: border-box;
-        margin: 0;
-        padding: 0;
-      }
-
-      body {
-        font-family: system-ui;
-        background: var(--bg-primary);
-        color: var(--text-primary);
-        height: 100vh;
-      }
-
-      h1 {
-        padding: 10px;
-      }
-
-      #app {
-        display: flex;
-        height: calc(100vh - 50px);
-      }
-
-      #sidebar {
-        width: 220px;
-        background: var(--bg-sidebar);
-        color: var(--text-sidebar);
-        display: flex;
-        flex-direction: column;
-        padding: 10px;
-        gap: 8px;
-      }
-
-      /* SEARCH */
-      #search {
-        padding: 7px;
-        border-radius: 6px;
-        border: 1px solid var(--border-color);
-        background: var(--bg-note-item);
-        color: var(--text-sidebar);
-        font-size: 13px;
-        width: 100%;
-      }
-
-      #note-list {
-        flex: 1;
-        overflow-y: auto;
-        display: flex;
-        flex-direction: column;
-        gap: 6px;
-      }
-
-      #editor {
-        flex: 1;
-        display: flex;
-        flex-direction: column;
-        padding: 15px;
-        gap: 10px;
-        background: var(--bg-editor);
-      }
-
-      #note-title {
-        font-size: 18px;
-        padding: 8px;
-        border: 1px solid var(--border-color);
-        border-radius: 6px;
-        background: var(--bg-editor);
-        color: var(--text-primary);
-      }
-
-      textarea {
-        flex: 1;
-        font-size: 16px;
-        padding: 12px;
-        resize: none;
-        border: 1px solid var(--border-color);
-        border-radius: 6px;
-        background: var(--bg-editor);
-        color: var(--text-primary);
-      }
-
-      #toolbar {
-        display: flex;
-        gap: 8px;
-      }
-
-      button {
-        padding: 8px 12px;
-        font-size: 14px;
-        border: none;
-        cursor: pointer;
-        border-radius: 8px;
-        background: var(--button-bg);
-        color: white;
-      }
-
-      button:hover {
-        background: var(--button-hover);
-      }
-
-      #new-note {
-        width: 100%;
-        margin-bottom: 6px;
-      }
-
-      .note-item {
-        background: var(--bg-note-item);
-        border-radius: 6px;
-        padding: 8px;
-        cursor: pointer;
-        position: relative;
-      }
-
-      .note-item:hover {
-        background: var(--bg-note-item-hover);
-      }
-
-      .note-item.active {
-        background: var(--bg-note-item-active);
-      }
-
-      .note-item-date {
-        color: var(--text-muted);
-      }
-
-      /* ✅ PIN BUTTON ADDED HERE */
-      .note-item-pin {
-        background: transparent;
-        border: none;
-        font-size: 12px;
-        float: right;
-        padding: 0;
-        cursor: pointer;
-        margin-right: 4px;
-        color: var(--text-muted);
-      }
-
-      #word-count {
-        color: var(--text-muted);
-        font-size: 12px;
-      }
-
-      #save_status {
-        color: var(--text-muted);
-        font-size: 13px;
-      }
+        /* 
+           CHANGE: Added @media print styles to ensure that when exporting to PDF or Printing, 
+           only the text inside the editor is shown. All buttons, titles, and status bars are hidden.
+        */
+        @media print {
+            /* Hide everything by default */
+            body * { visibility: hidden; }
+            /* Only show the note textarea and make it fill the page */
+            #note, #note * { 
+                visibility: visible; 
+                border: none !important; 
+                position: absolute; 
+                left: 0; 
+                top: 0; 
+                width: 100%; 
+                height: 100%; 
+            }
+        }
     </style>
-  </head>
+</head>
+<body>
+    <h1>📝 Quick Note Taker</h1>
+    <p id="save_status">Auto save status</p>
+    
+    <textarea id="note" placeholder="Start typing your note..."></textarea>
+    
+    <div class="stats">
+        <span id="char-count">0 chars</span> | <span id="word-count">0 words</span>
+    </div>
 
-  <body>
-    <h1>🥹 Quick Note Taker</h1>
+    <div class="controls">
+        <button id="new-note">📰 New Note</button>
+        <button id="open-file">📂 Open File</button>
+        <button id="save">💾 Save </button>
+        <button id="print">🖨️ Print</button>
+        <button id="export-pdf">📄 PDF</button>
+        <button id="delete-note" class="delete">🗑️ Move to Trash</button>
+        <button id="trash-bin">♻️ Trash Bin</button>
+    </div>
 
-    <div id="app">
-      <div id="sidebar">
-        <button id="new-note">New Note</button>
-
-        <input type="text" id="search" placeholder="Search notes..." />
-
-        <div id="note-list"></div>
-      </div>
-
-      <div id="editor">
-        <input type="text" id="note-title" placeholder="Note title..." />
-        <textarea id="note" placeholder="Start typing your note..."></textarea>
-
-        <div id="toolbar">
-          <button id="save">Save</button>
-          <button id="save-as">Save As</button>
-          <button id="open-file">Open File</button>
-          <button id="font-increase">A+</button>
-          <button id="font-decrease">A-</button>
-          <button id="dark-mode-toggle">Dark Mode</button>
-        </div>
-
-        <p id="save_status"></p>
-        <p id="word-count">Words: 0 | Characters: 0</p>
-      </div>
+    <div id="modal-overlay"></div>
+    <div id="trash-modal">
+        <h2>♻️ Trash Bin</h2>
+        <ul id="trash-list"></ul>
+        <button id="close-trash">Close</button>
     </div>
 
     <script src="renderer.js"></script>
-  </body>
+</body>
 </html>

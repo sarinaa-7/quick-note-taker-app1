@@ -1,37 +1,20 @@
-const {
-    contextBridge,
-    ipcRenderer
-} = require('electron');
+const { contextBridge, ipcRenderer } = require('electron');
 
 contextBridge.exposeInMainWorld('electronAPI', {
-saveNote: (note) => ipcRenderer.invoke('save-note', note),
-loadNote: () => ipcRenderer.invoke('load-note'),
-saveAs: (text) => ipcRenderer.invoke('save-as', text),
-deleteNote: () => ipcRenderer.invoke('delete-note'),
-newNote: () => ipcRenderer.invoke('new-note'),
-openFile: () => ipcRenderer.invoke('open-file'),
-togglePin: (id) => ipcRenderer.invoke('toggle-pin', id),
-
-smartSave: (text, filePath) =>
-    ipcRenderer.invoke('smart-save', text, filePath),
-
-onMenuAction: (channel, callback) =>
-    ipcRenderer.on(channel, callback),
-
-// NEW: JSON notes methods
-getNotes: () => ipcRenderer.invoke('get-notes'),
-
-saveNoteJson: (note) =>
-    ipcRenderer.invoke('save-note-json', note),
-
-deleteNoteJson: (id) =>
-    ipcRenderer.invoke('delete-note', id),
-
-// NEW: settings methods
-getSettings: () => ipcRenderer.invoke('get-settings'),
-
-saveSettings: (settings) =>
-    ipcRenderer.invoke('save-settings', settings)
-
-
+    saveNote: (data) => ipcRenderer.invoke('save-note', data),
+    openFile: () => ipcRenderer.invoke('open-file'),
+    getTrash: () => ipcRenderer.invoke('get-trash'),
+    moveToTrash: (note) => ipcRenderer.invoke('move-to-trash', note),
+    permanentDelete: (id) => ipcRenderer.invoke('permanent-delete', id),
+    restoreFromTrash: (id) => ipcRenderer.invoke('restore-from-trash', id),
+    getSettings: () => ipcRenderer.invoke('get-settings'),
+    saveSettings: (settings) => ipcRenderer.invoke('save-settings', settings),
+    printNote: () => ipcRenderer.invoke('print-note'),
+    exportPDF: () => ipcRenderer.invoke('export-pdf'),
+    
+    // Listeners
+    onMenuNewNote: (callback) => ipcRenderer.on('menu-new-note', callback),
+    onMenuSaveNote: (callback) => ipcRenderer.on('menu-save-note', callback),
+    onToggleDarkMode: (callback) => ipcRenderer.on('toggle-dark-mode', callback),
+    onExternalFileOpened: (callback) => ipcRenderer.on('external-file-opened', (event, content) => callback(content))
 });
